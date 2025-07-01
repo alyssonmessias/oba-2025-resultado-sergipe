@@ -65,12 +65,27 @@
 
       items.forEach(item => {
         const row = document.createElement("tr");
+		
+		// Definir a cor de fundo conforme a medalha
+		let medalColor = "";
+		switch ((item.medal_name || "").toLowerCase()) {
+		  case "ouro":
+			medalColor = "#ffd700";
+			break;
+		  case "prata":
+			medalColor = "#c0c0c0";
+			break;
+		  case "bronze":
+			medalColor = "#cd7f32";
+			break;
+		}
+		
         row.innerHTML = `
           <td>${item.student_name}</td>
           <td>${item.student_level}</td>
           <td>${item.school_name}</td>
           <td>${item.school_city}</td>
-          <td>${item.medal_name}</td>
+          <td style="background-color:${medalColor}; font-weight: bold;">${item.medal_name}</td>
           <td>${item.grade_final ?? "-"}</td>
         `;
         tbody.appendChild(row);
@@ -78,14 +93,35 @@
     }
 	
 	// Preencher combo de escolas
-	const schoolSet = new Set(data.map(item => item.school_name).filter(Boolean));
+	/*const schoolSet = new Set(data.map(item => item.school_name).filter(Boolean));
 	const schoolSelect = document.getElementById("filterSchool");
+	// Coleta os nomes únicos de escolas e ordena alfabeticamente
+    const schools = Array.from(new Set(data.map(d => d.school_name)))
+    .filter(name => !!name)
+    .sort((a, b) => a.localeCompare(b, 'pt', { sensitivity: 'base' }));
+	
 	schoolSet.forEach(school => {
 	  const opt = document.createElement("option");
 	  opt.value = school;
 	  opt.textContent = school;
 	  schoolSelect.appendChild(opt);
-	});
+	});*/
+	
+	//function populateSchoolOptions() {
+	  const schoolSelect = document.getElementById("filterSchool");
+	  
+	  // Coleta os nomes únicos de escolas e ordena alfabeticamente
+	  const schools = Array.from(new Set(data.map(d => d.school_name)))
+		.filter(name => !!name)
+		.sort((a, b) => a.localeCompare(b, 'pt', { sensitivity: 'base' }));
+
+	  schools.forEach(school => {
+		const opt = document.createElement("option");
+		opt.value = school;
+		opt.textContent = school;
+		schoolSelect.appendChild(opt);
+	  });
+	//}
 
     function applyFilters() {
       const name = document.getElementById("filterName").value.toLowerCase();
